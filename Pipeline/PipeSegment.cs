@@ -2,12 +2,18 @@
 
 namespace Pipeline
 {
-    public class PipeSegment<T> where T : class
+    public class PipeSegment<T>
     {
         public PipeSegment(T result)
         {
             Result = result;
         }
+
+        public void ReInit(T result)
+        {
+            Result = result;
+        }
+
         
         private T Result { get; set; }
 
@@ -21,12 +27,12 @@ namespace Pipeline
             action(Result); return Result;
         }
 
-        public PipeSegment<T> ThenProcess(Func<T,T> action)
+        public PipeSegment<T> Process(Func<T,T> action)
         {
             Result = action(Result);
             return this;
         }
-
+        
         public void ThenIgnoreResult(Action<T> action) => action(Result);
 
 
