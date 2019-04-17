@@ -1,2 +1,2 @@
 # pipelines
-Simple pipeline library
+Simple pipeline library.
