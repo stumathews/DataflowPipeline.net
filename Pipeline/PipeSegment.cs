@@ -24,16 +24,25 @@ namespace Pipeline
         /// <returns>returns the result prior to the then</returns>
         public T FinallyDo(Func<T,T> action)
         {
-            action(Result); return Result;
+            return action(Result); 
         }
 
+        /// <summary>
+        /// Process the current contents of the pipeline. Puts the result back into the pipeline
+        /// </summary>
+        /// <param name="action">the method to process the current contents of the pipeline</param>
+        /// <returns>the modification of the data for the next pipeline segment in the pipeline </returns>
         public PipeSegment<T> Process(Func<T,T> action)
         {
             Result = action(Result);
             return this;
         }
         
-        public void ThenIgnoreResult(Action<T> action) => action(Result);
+        /// <summary>
+        /// Uses the contents but doesn't return any results of processing to the pipeline
+        /// </summary>
+        /// <param name="action"></param>
+        public void ThenUse(Action<T> action) => action(Result);
 
 
         /// <summary>
@@ -49,6 +58,10 @@ namespace Pipeline
 
         public PipeSegment<T> FinallyDo(Func<T,object> action) { return new PipeSegment<T>((T)action(Result)); }
 
+        /// <summary>
+        /// Get the current data out of the pipeline
+        /// </summary>
+        /// <returns></returns>
         public T Finish() => Result;
     }
 }
