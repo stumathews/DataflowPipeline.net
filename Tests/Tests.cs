@@ -27,9 +27,11 @@ namespace Tests
             Assert.AreEqual(result, "hello everybody.");
         }
 
+        
         [TestMethod]
-        public void TestThenIgnoreResult()
+        public void TestThenUse()
         {
+            
             var data = " hello Everybody!";
 
             string result = string.Empty;
@@ -38,8 +40,11 @@ namespace Tests
                 .Process(s1 => s1.Trim())
                 .Process(s2 => s2.ToUpper())
                 // Uses the contents but doesn't return any results of processing to the pipeline
-                .ThenUse(s3 => { result = s3;}); 
-            Assert.AreEqual(result, "HELLO EVERYBODY!");
+                .ThenUse(s =>
+                {
+                    result = data;
+                });
+            Assert.AreEqual(result, data);
         }
 
         [TestMethod]
@@ -50,7 +55,7 @@ namespace Tests
                 .Process(str => str.Trim())
                 .Process(str => str.Replace('!', '.'))
                 // Does some processing and then returns the contents of the pipeline up until this point
-                .FinallyDo(s1 =>
+                .ThenUse(s1 =>
                 {
                     s1 = s1.Replace(" ", "");
                     var sb = new StringBuilder(s1.Length);
