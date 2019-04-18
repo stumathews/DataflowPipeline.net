@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
+using Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Pipeline;
 using static Pipeline.Pipeline;
@@ -89,7 +91,7 @@ namespace Tests
             var result = StartPipeline(() => data)
                 .Process(str => str.ToUpper()) // process the data (string)
                 .Process(s1 => s1.ToUpper()) //process the data now in upercase (string)
-                .Process(x => x.Length) // process the data (string) but return it into the pipeline as an integer (change type)
+                .ProcessAndTransform(x => x.Length) // process the data (string) but return it into the pipeline as an integer (change type)
                 .Process(i => i)
                 .Finish(); // Return the integer now. This is similar to what Bind() does in languageExt
             Assert.AreEqual(result, 17);
@@ -100,16 +102,79 @@ namespace Tests
         {
             var data = " hello Everybody!";
 
-            var result = Pipeline.Pipeline.Process(data.MakePipeline()
+            var result = Pipeline.Pipeline.ProcessAndTransform(data.MakePipeline()
                     .Process(s1 => s1) //process string
                     .Process(s1 => s1.ToUpper()) //process string
                     .Finish() // return string
                     .MakePipeline(x => x.Length) //Notice we can also change type when making a new pipeline
                     .Process(i => i), i => i) //process new int pipeline
-                    .Process(i => (double)i) // convert to a double now
+                    .ProcessAndTransform(i => (double)i) // convert to a double now
                 .Finish();
                 
             Assert.AreEqual(result, 17f);
+        }
+
+        [TestMethod]
+        public void TestErrorBehaviorIgnoreErrorsTrue()
+        {
+            var result = StartPipeline(() => 4, ignoreErrors: true)
+                .Process(i => (i ^ 1) / 0, label: "xor")
+                .Process(i => i - 1, label: "minus1")
+                .Process(i => i / 0, label: "dividebyzero")
+                .ProcessAndTransform(i => "Stuart");
+            Assert.AreEqual(2, result.Errors.Count);
+
+        }
+
+        [TestMethod]
+        public void TestErrorBehaviorIgnoreErrorsFalse()
+        {
+            Assert.ThrowsException<DivideByZeroException>(() 
+                => StartPipeline(() => 4, ignoreErrors: false)
+                .Process(i => (i ^ 1) / 0, label: "xor")
+                .Process(i => i - 1, label: "minus1")
+                .Process(i => i / 0, label: "dividebyzero")
+                .ProcessAndTransform(i => "Stuart"));
+
+        }
+
+        [TestMethod]
+        public void TestErrorBehaviorThrowIfFailuresOnFinish()
+        {
+            Assert.ThrowsException<AggregateException>(() 
+                => StartPipeline(() => 4, ignoreErrors: true)
+                    .Process(i => (i ^ 1) / 0, label: "xor")
+                    .Process(i => i - 1, label: "minus1")
+                    .Process(i => i / 0, label: "dividebyzero")
+                    .ProcessAndTransform(i => "Stuart").Finish(throwIfErrors: true));
+
+        }
+
+        [TestMethod]
+        public void TestErrorBehaviorignoreErrorsAndFinish()
+        {
+             var result = StartPipeline(() => 4, ignoreErrors: true)
+                    .Process(i => (i ^ 1) / 0, label: "xor")
+                    .Process(i => i - 1, label: "minus1")
+                    .Process(i => i / 0, label: "dividebyzero")
+                    .ProcessAndTransform(i => "Stuart").Finish();
+            Assert.AreEqual("Stuart",result);
+
+        }
+
+        /// <summary>
+        /// Inability to change type successfully is critical
+        /// </summary>
+        [TestMethod]
+        public void TestDoubleTransformBetweenErrors()
+        {
+            Assert.ThrowsException<System.FormatException>(()=>
+                StartPipeline(() => 4, ignoreErrors: true)
+                .Process(i => (i ^ 1) / 0, label: "xor")
+                .Process(i => i - 1, label: "minus1")
+                .Process(i => i / 0, label: "dividebyzero")
+                .ProcessAndTransform(i => "Stuart")
+                .ProcessAndTransform(int.Parse));
         }
     }
 }

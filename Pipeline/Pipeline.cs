@@ -10,30 +10,44 @@ namespace Pipeline
         /// <typeparam name="T"></typeparam>
         /// <param name="returningAction">The function that will result in some data, which wil be fed into the pipeline</param>
         /// <returns>the first set of data to enter the pipeline</returns>
-        public static PipeSegment<T> StartPipeline<T>(Func<T> returningAction) 
-            => new PipeSegment<T>(returningAction());
+        public static PipeResult<T> StartPipeline<T>(Func<T> returningAction, bool ignoreErrors = false) 
+            => new PipeResult<T>(returningAction(), ignoreErrors);
 
         /// <summary>
         /// Takes any arbitary data and feeds it into a new pipeline
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="type">Anything you want to feed into the pipeline</param>
+        /// <param name="type">Previous pipe segment</param>
         /// <returns></returns>
-        public static PipeSegment<T> MakePipeline<T>(this T type)
-            => new PipeSegment<T>(type);
+        public static PipeResult<T> MakePipeline<T>(this T type)
+            => new PipeResult<T>(type);
+
+        private static PipeResult<TR> MakePipeline<T,TR>(this PipeResult<T> type, Func<T, TR> select)
+            => new PipeResult<TR>(@select(type.Finish()))
+        {
+            Errors = type.Errors
+        };
 
         /// <summary>
         /// Creates a new pipe segment using the value passed in
         /// </summary>
         /// <typeparam name="T">Type you want to change</typeparam>
         /// <typeparam name="TR">The desired type you want to change to</typeparam>
-        /// <param name="type">the value you'd like to change</param>
+        /// <param name="type">previous pipe segment</param>
         /// <param name="select">the function that will change that value to your desired type</param>
         /// <returns></returns>
-        public static PipeSegment<TR> MakePipeline<T, TR>(this T type, Func<T, TR> select)
-            => new PipeSegment<TR>(select(type));
-
-        public static PipeSegment<TR> Process<T, TR>(this PipeSegment<T> type, Func<T, TR> select) 
-            => MakePipeline(type.Finish(), select);
+        public static PipeResult<TR> MakePipeline<T, TR>(this T type, Func<T, TR> select)
+            => new PipeResult<TR>(@select(type));
+        
+        /// <summary>
+        /// Processes the result, 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TR"></typeparam>
+        /// <param name="pipeResult"></param>
+        /// <param name="select"></param>
+        /// <returns></returns>
+        public static PipeResult<TR> ProcessAndTransform<T, TR>(this PipeResult<T> pipeResult, Func<T, TR> select) 
+            => MakePipeline(pipeResult, @select);
     }
 }
