@@ -31,7 +31,9 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
 
 # Error handling
 
-Data pipelining is not really geared up for dealing with errors encountered while processing the pipeline. There are strategies to deal with this but the approach I've taken is to allow you to specify that any errors that occur either skip that processing step and forward the data onto the next stage(basically ignore the stage and hope downstread something will fix it) - or throw an exception either when it occurs or when the pipeline is finsihed. languageExt deal with this problem by updating the data being passed in the pipeline by usually sending in a Either type. This can still be done here.
+Data pipelining is not really geared up for dealing with errors encountered while processing the pipeline. There are strategies to deal with this but the approach I've taken is to allow you to specify that any errors that occur either skip that processing step and forward the data onto the next stage(basically ignore the stage and hope downstread something will fix it) - or throw an exception either when it occurs or when the pipeline is finsihed. languageExt deal with this problem by updating the data being passed in the pipeline by usually sending in a Either type. This can still be done here by supplying a returnIfError function which can configure the return type to indicate an error, like IsLeft.
+
+You can optionally choose to continue with running the pipeline after an error or but short circuting the rest of the pipeline.
 
 Unlike traditional pipeline and filters implementations such as the classic unix pipes, any errors that are encountered as exceptions are logged and available at the end of the pipeline along with the stage/filter name if you provided it. They are not sent to a parallel pipeline. I belive this to be useful :-)
 
@@ -77,4 +79,105 @@ This shows you how you can check what errors have occured along the pipeline pri
    var finalResult = result.Finish();
 
   Assert.AreEqual(result, 17f);
+```
+
+Short circuiting and setting configuring the error result
+
+```csharp
+[TestMethod]
+        public void TestReturnOnError()
+        {
+            var isMinusCalled = false;
+            var isdivideByZeroCalled = false;
+            var result = StartPipeline(() => 4, ignoreErrors: true, onErrorReturn: (i) => 99)
+                .Process(i => (i ^ 1) / 0, label: "xor")
+                .Process(i =>
+                {
+                    isMinusCalled = true;
+                    return i - 1;
+                }, label: "minus1")
+                .Process(i =>
+                {
+                    isdivideByZeroCalled = true;
+                    return i / 0;
+                }, label: "dividebyzero") // returns 99 on error
+                .Process(i => i+1) // no short curcuit so next stage gets 99
+                .Finish();
+
+            Assert.IsTrue( result == 100 && isMinusCalled && isdivideByZeroCalled);
+        }
+
+        [TestMethod]
+        public void TestReturnOnErrorAndShortCircuit()
+        {
+            var isMinusCalled = false;
+            var isdivideByZeroCalled = false;
+            var result = StartPipeline(() => 4, ignoreErrors: true, onErrorReturn: (i) => 99, shortCircuitonError: true)
+                .Process(i => (i ^ 1) / 0, label: "xor")
+                .Process(i =>
+                {
+                    isMinusCalled = true;
+                    return i - 1;
+                }, label: "minus1")
+                .Process(i =>
+                {
+                    // never called because error occured and we're short circuiting on error
+                    isdivideByZeroCalled = true;
+                    return i / 0;
+                }, label: "dividebyzero").Finish();
+
+            Assert.IsTrue( result == 99 // error result returned
+                           && !isMinusCalled && !isdivideByZeroCalled);
+        }
+
+        [TestMethod]
+        public void TestShortCircuit()
+        {
+            var isMinusCalled = false;
+            var isdivideByZeroCalled = false;
+            var result = StartPipeline(() => 4, ignoreErrors: true, shortCircuitonError: true)
+                .Process(i => (i ^ 1) / 0, label: "xor") // error
+                .Process(i => (i + 96), label: "plus") // never called, short circuit
+                .Process(i =>
+                {
+                    // never called, short circuit
+                    isMinusCalled = true;
+                    return i - 1;
+                }, label: "minus1")
+                .Process(i =>
+                {
+                    // never called, short circuit
+                    isdivideByZeroCalled = true;
+                    return i / 0;
+                }, label: "dividebyzero").Finish();
+
+            Assert.IsTrue( result == 4 // error result returned
+                           && !isMinusCalled && !isdivideByZeroCalled);
+        }
+
+        [TestMethod]
+        public void TestShortCircuit2()
+        {
+            var isMinusCalled = false;
+            var isdivideByZeroCalled = false;
+            var result = StartPipeline(() => 4, ignoreErrors: true, shortCircuitonError: false)
+                .Process(i => (i ^ 1) / 0, label: "xor") //ignores this error
+                .Process(i => (i + 96), label: "plus") //continues with this
+                .Process(i =>
+                {
+                    //continues with this
+                    isMinusCalled = true;
+                    return i - 1;
+                }, label: "minus1")
+                .Process(i =>
+                {
+                    // continues with this but will ignore the error below
+                    isdivideByZeroCalled = true;
+                    return i / 0;
+                }, label: "dividebyzero").Finish();
+
+            Assert.IsTrue( result == 99 // error result returned
+                           && isMinusCalled && isdivideByZeroCalled);
+        }
+    }
 ```
