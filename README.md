@@ -151,8 +151,8 @@ passing Either<L,R> types, you can set the Either to say a Left if that best ind
         
 ```
 
-You can also short circut the rest of the pipeline by specifying shortCircutonError = true 
-This will basically return the latest value or is you specified onErrorReturn, then whatever value you wish
+You can also short circut the rest of the pipeline by specifying shortCircutOnError = true 
+This will basically return the latest value or if you specified onErrorReturn, then whatever value you wish!
 
 ```csharp
         [TestMethod]
