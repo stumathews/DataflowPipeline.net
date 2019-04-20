@@ -73,9 +73,11 @@ This shows you how you can check what errors have occured along the pipeline pri
           .Process(i => i), i => i) //process new int pipeline
           .ProcessAndTransform(i => (double)i); // convert to a double now
       
-      // At this point you can inspect result's Errors member to see if its had any and decide what you are doing to do about it.
+      // At this point you can inspect result's Errors member to see if its had any 
+      // and decide what you are doing to do about it.
       // See how languageExt deals with this by passing in data in the form of a Either<L,R> 
-      // where during processing you can set the data to indicate an error
+      // where during processing you can set the data to indicate an error or if you'd like 
+      // to do this yourself automatically see below re: configuring return type on error!
    var finalResult = result.Finish();
 
   Assert.AreEqual(result, 17f);
@@ -121,7 +123,9 @@ This will basically return the latest value or is you specified onErrorReturn, t
         {
             var isMinusCalled = false;
             var isdivideByZeroCalled = false;
-            var result = StartPipeline(() => 4, ignoreErrors: true, onErrorReturn: (i, exception) => 99, shortCircuitonError: true)
+            var result = StartPipeline(() => 4, ignoreErrors: true, 
+                                                onErrorReturn: (i, exception) => 99,
+                                                shortCircuitonError: true)
                 .Process(i => (i ^ 1) / 0, label: "xor")
                 .Process(i =>
                 {
@@ -149,7 +153,8 @@ This shows you how the last value is used if a short circuit is needed.
         {
             var isMinusCalled = false;
             var isdivideByZeroCalled = false;
-            var result = StartPipeline(() => 4, ignoreErrors: true, shortCircuitonError: true)
+            var result = StartPipeline(() => 4, ignoreErrors: true,
+                                                shortCircuitonError: true)
                 .Process(i => (i ^ 1) / 0, label: "xor") // error
                 .Process(i => (i + 96), label: "plus") // never called, short circuit
                 .Process(i =>
@@ -179,7 +184,8 @@ In this case, any exceptions are ingored
         {
             var isMinusCalled = false;
             var isdivideByZeroCalled = false;
-            var result = StartPipeline(() => 4, ignoreErrors: true, shortCircuitonError: false)
+            var result = StartPipeline(() => 4, ignoreErrors: true,
+                                                shortCircuitonError: false)
                 .Process(i => (i ^ 1) / 0, label: "xor") //ignores this error
                 .Process(i => (i + 96), label: "plus") //continues with this
                 .Process(i =>
