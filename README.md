@@ -18,13 +18,12 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
 # Simple Example
 
 ```csharp
-        const string data = " hello Everybody!";         
         [TestMethod]
         public void TestChangeTypeWithMakeNewPipeline()
         {
             var data = " hello Everybody!";
 
-            string result = data.MakePipeline()
+            string result = StartPipeline(() => data) //send in data
                 .Process(s1 => s1) //process string
                 .Process(s1 => s1.ToUpper()) //process string
                 .Finish(); // return string
