@@ -27,6 +27,7 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
                 .Finish(); // Return the integer now.
             Assert.AreEqual(result, 17);
 ```
+You can have any number of steps in the pipeline and have control over what happens when an error/exception occurs.
 
 # Error handling
 
@@ -47,7 +48,6 @@ var result = StartPipeline(() => 4, ignoreErrors: true)
                     .ProcessAndTransform(i => "Stuart").Finish();
             Assert.AreEqual("Stuart",result);
 ```
-You can have any number of steps in the pipeline.
 
 This shows you how you can throw if exceptions are encountered at any point, effectively halts the pipeline:
 
