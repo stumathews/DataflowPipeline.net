@@ -120,8 +120,10 @@ This shows you how you can check what errors have occured along the pipeline pri
 
 ## Short circuiting and setting configuring the error result
 
-Configuring the result of the pipeline when an error occurs. if you're used to using languageExt's datapipline functionality along with
-passing Either<L,R> types, you can set the Either to say a Left if that best indicates an error. The error that occured is assessible so you can use it to configure your result accordingly.
+This shows configuring the result of the pipeline when an error occurs. 
+
+If you're used to using languageExt's datapipline functionality along with
+passing Either<L,R> types, you can set the Either to say a Left if that best indicates an error. The error that occured is accessible so you can use it to configure your result accordingly:
 ```csharp
 [TestMethod]
         public void TestReturnOnError()
