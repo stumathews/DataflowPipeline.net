@@ -42,7 +42,12 @@ You can have any number of steps in the pipeline and have control over what happ
 # Error handling
 
 Data pipelining as an architectural pattern is not traditionally been really geared up for providing maximum flexibility in dealing with complex errors encountered while processing the pipeline. That said, with DataFlowPipeline.net, there are strategies to deal with this. 
-We've taken the approach to allow you to specify that if any errors that occur either skip that processing step and forward the data onto the next stage(basically ignore the stage and hope downstread something will fix it) - or throw an exception either when it occurs or when the pipeline is finsihed or automatically return specified data from the pipeline such as configuring your data so as to contain information about the exception. LanguageExt deal with this problem by updating the data being passed in the pipeline by usually sending in a Either type. This can be done similararly with DataFlowPipeline by supplying a returnIfError function which can configure the return type to indicate an error, like setting the Either data to indicate an error.
+
+We've taken the approach to allow you to specify that if any errors ooccur either skip that processing step and forward the data onto the next stage - basically ignore the stage and hope downstread something will fix it - or throw an exception either when it occurs or when the pipeline is finsihed. Alternatively and perhaps more useful is to automatically return some specified data from the pipeline by configuring your data so as to contain information about the exception. 
+
+LanguageExt deals with the latter approach by checking the data being passed in the pipeline behind the scenes(my pet hate) and then configuring the data that is returned by usually sending in a Either Left or Right depending on which one means error.
+
+As elluded to, this can also be done with DataFlowPipeline without hiding what its doing by supplying a returnIfError function which can configure the return type to indicate an error, like setting the Either data to indicate an error. Error information is avaialbe in the returnIfError function!
 
 You can optionally choose to continue with running the pipeline after an error or but short circuting the rest of the pipeline.
 
