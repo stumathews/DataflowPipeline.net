@@ -49,7 +49,7 @@ LanguageExt deals with the latter approach by checking the data being passed in 
 
 As elluded to, this can also be done with DataFlowPipeline without hiding what its doing by supplying a returnIfError function which can configure the return type to indicate an error, like setting the Either data to indicate an error. Error information is avaialbe in the returnIfError function!
 
-You can optionally choose to continue with running the pipeline after an error or but short circuting the rest of the pipeline.
+You can optionally choose to continue with running the pipeline after an error or short circuting the rest of the pipeline and return the last result or the configured returnOnError result.
 
 Unlike traditional pipeline and filters implementations such as the classic unix pipes, any errors that are encountered as exceptions are logged and available at the end of the pipeline along with the stage/filter name if you provided it. They are not sent to a parallel pipeline. I belive this to be useful :-)
 
