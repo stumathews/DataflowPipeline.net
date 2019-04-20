@@ -81,8 +81,10 @@ This shows you how you can check what errors have occured along the pipeline pri
   Assert.AreEqual(result, 17f);
 ```
 
-Short circuiting and setting configuring the error result
+## Short circuiting and setting configuring the error result
 
+Configuring the result of the pipeline when an error occurs. if you're used to using languageExt's datapipline functionality along with
+passing Either<L,R> types, you can set the Either to say a Left if that best indicates an error.
 ```csharp
 [TestMethod]
         public void TestReturnOnError()
@@ -106,7 +108,13 @@ Short circuiting and setting configuring the error result
 
             Assert.IsTrue( result == 100 && isMinusCalled && isdivideByZeroCalled);
         }
+        
+```
 
+You can also short circut the rest of the pipeline by specifying shortCircutonError = true 
+This will basically return the latest value or is you specified onErrorReturn, then whatever value you wish
+
+```csharp
         [TestMethod]
         public void TestReturnOnErrorAndShortCircuit()
         {
@@ -130,6 +138,11 @@ Short circuiting and setting configuring the error result
                            && !isMinusCalled && !isdivideByZeroCalled);
         }
 
+```
+
+This shows you how the last value is used if a short circuit is needed. 
+
+```csharp
         [TestMethod]
         public void TestShortCircuit()
         {
@@ -154,7 +167,12 @@ Short circuiting and setting configuring the error result
             Assert.IsTrue( result == 4 // error result returned
                            && !isMinusCalled && !isdivideByZeroCalled);
         }
+```
 
+This shows you how if no shortcut on error condition is specified, you just keep passing the values down the pipeline.
+In this case, any exceptions are ingored
+
+```csharp
         [TestMethod]
         public void TestShortCircuit2()
         {
