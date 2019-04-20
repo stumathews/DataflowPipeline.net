@@ -8,7 +8,8 @@ The filters are simple function that you can write to take in the data and retur
 Benefits of this architectural pattern is that you have flexibilty in designing your pipeline and the order and configuration of the filters you use. 
 Liabilities is that error handling can be awkward. 
 
-This implementation used the 'Push' variety of the pattern as described in "Pattern-Orientated Software Architecture for Dummies" by Robert hanmer: https://www.amazon.com/Pattern-Oriented-Software-Architecture-Dummies-Robert/dp/1119963990
+This implementation used the 'Push' variety of the pattern as described in "Pattern-Orientated Software Architecture for Dummies"
+by Robert Hanmer: https://www.amazon.com/Pattern-Oriented-Software-Architecture-Dummies-Robert/dp/1119963990
 
 See: 
 https://docs.microsoft.com/en-us/azure/architecture/patterns/pipes-and-filters
@@ -32,7 +33,7 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
 
 Data pipelining is not really geared up for dealing with errors encountered while processing the pipeline. There are strategies to deal with this but the approach I've taken is to allow you to specify that any errors that occur either skip that processing step and forward the data onto the next stage(basically ignore the stage and hope downstread something will fix it) - or throw an exception either when it occurs or when the pipeline is finsihed. languageExt deal with this problem by updating the data being passed in the pipeline by usually sending in a Either type. This can still be done here.
 
-Any errors that are encountered as exceptions are logged and available at the end of the pipeline along with the stage/filter name if you provided it.
+Unlike traditional pipeline and filters implementations such as the classic unix pipes, any errors that are encountered as exceptions are logged and available at the end of the pipeline along with the stage/filter name if you provided it. They are not sent to a parallel pipeline. I belive this to be useful :-)
 
 Example:
 
