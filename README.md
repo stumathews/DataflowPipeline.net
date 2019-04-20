@@ -18,14 +18,27 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
 # Simple Example
 
 ```csharp
- const string data = " hello Everybody!";
+        const string data = " hello Everybody!";         
+        [TestMethod]
+        public void TestChangeTypeWithMakeNewPipeline()
+        {
+            var data = " hello Everybody!";
 
-            var result = StartPipeline(() => data)
-                .Process(str => str.ToUpper()) // process the data (string)               
-                .ProcessAndTransform(x => x.Length) // process the data (string) and tranform to int
-                .Process(i => i) // use int from now on...
-                .Finish(); // Return the integer now.
-            Assert.AreEqual(result, 17);
+            string result = data.MakePipeline()
+                .Process(s1 => s1) //process string
+                .Process(s1 => s1.ToUpper()) //process string
+                .Finish(); // return string
+
+            // you can turn any type into a pipeline
+
+            result.MakePipeline(x => x.Length) //Notice we can also change type when making a new pipeline
+                .Process(i => i)
+                .ProcessAndTransform(i => i) //process new int pipeline
+                .ProcessAndTransform(i => (double)i) // convert to a double now
+                .Finish();
+                
+            Assert.AreEqual(result, 17f);
+        }
 ```
 You can have any number of steps in the pipeline and have control over what happens when an error/exception occurs.
 
