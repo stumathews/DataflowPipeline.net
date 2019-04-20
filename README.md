@@ -84,14 +84,14 @@ This shows you how you can check what errors have occured along the pipeline pri
 ## Short circuiting and setting configuring the error result
 
 Configuring the result of the pipeline when an error occurs. if you're used to using languageExt's datapipline functionality along with
-passing Either<L,R> types, you can set the Either to say a Left if that best indicates an error.
+passing Either<L,R> types, you can set the Either to say a Left if that best indicates an error. The error that occured is assessible so you can use it to configure your result accordingly.
 ```csharp
 [TestMethod]
         public void TestReturnOnError()
         {
             var isMinusCalled = false;
             var isdivideByZeroCalled = false;
-            var result = StartPipeline(() => 4, ignoreErrors: true, onErrorReturn: (i) => 99)
+            var result = StartPipeline(() => 4, ignoreErrors: true, onErrorReturn: (i, exception) => 99)
                 .Process(i => (i ^ 1) / 0, label: "xor")
                 .Process(i =>
                 {
@@ -120,7 +120,7 @@ This will basically return the latest value or is you specified onErrorReturn, t
         {
             var isMinusCalled = false;
             var isdivideByZeroCalled = false;
-            var result = StartPipeline(() => 4, ignoreErrors: true, onErrorReturn: (i) => 99, shortCircuitonError: true)
+            var result = StartPipeline(() => 4, ignoreErrors: true, onErrorReturn: (i, exception) => 99, shortCircuitonError: true)
                 .Process(i => (i ^ 1) / 0, label: "xor")
                 .Process(i =>
                 {
