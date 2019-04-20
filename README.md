@@ -58,7 +58,7 @@ Example:
 This shows you how you can ignore errors in the pipeline.
 ```csharp
 var result = StartPipeline(() => 4, ignoreErrors: true)
-                    .Process(i => (i ^ 1) / 0, label: "xor")
+                    .Process(i => (i ^ 1) / 0, label: "xor") // error would occur here (DividebyZero)
                     .Process(i => i - 1, label: "minus1")
                     .Process(i => i / 0, label: "dividebyzero")
                     .ProcessAndTransform(i => "Stuart").Finish();
