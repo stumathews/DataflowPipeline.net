@@ -57,7 +57,7 @@ You can optionally choose to continue with running the pipeline after an error o
 
 Unlike traditional pipeline and filters implementations such as the classic unix pipes, any errors that are encountered as exceptions are logged and available at the end of the pipeline along with the stage/filter name if you provided it. They are not sent to a parallel pipeline. I belive this to be useful :-)
 
-Example:
+# Example:
 
 This shows you how you can ignore errors in the pipeline.
 ```csharp
@@ -70,10 +70,14 @@ var result = StartPipeline(() => 4, ignoreErrors: true)
 ```
 
 ## What dont you just use language.Ext?
-Because in my opinion its not intuitive to use and brings with it alot of functional programming baggage that you sometimes jut dont need.
-I dont like how you cannot see the Bind() function's internals easily and you are forced to used Monads as the data being passed into their pipeline via the Bind() function. 
-DataFlowPipeline is tries to bring the idea of datapiplinng from LanguageExt and make it simpler and more intuitive to use: how many people look at a LanguageExt codebase and see Bind() and go huh whats that supposed to do. Also I like the wording in this project: Process, StartPipeline, Transform etc... 
+Because in my opinion its not intuitive to use and brings with it alot of functional programming baggage that you sometimes just dont need.
+I dont like how you cannot see the Bind() function's internals easily and you are forced to used Monads as the data being passed into their pipeline.
+DataFlowPipeline is tries to bring the idea of datapiplinng from LanguageExt and make it simpler using any data type and to make the usage of it more intuitive to use: how many people look at a LanguageExt codebase and see Bind() and go huh whats that supposed to do? or Can i change what Bind() does? 
+Also I like the wording in this project: Process, StartPipeline, Transform etc... is more intuitive.
 Also you might not need more than this simple data pipeline and can forgoe the complexity of using languageExt altogether.
+There is a lot more control over how the pipeline works and this makes it easier to reason about then Bind() in LanguageExt
+
+## More Examples
 
 This shows you how you can throw if exceptions are encountered at any point, effectively halts the pipeline:
 
