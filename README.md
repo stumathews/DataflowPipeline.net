@@ -91,7 +91,8 @@ passing Either<L,R> types, you can set the Either to say a Left if that best ind
         {
             var isMinusCalled = false;
             var isdivideByZeroCalled = false;
-            var result = StartPipeline(() => 4, ignoreErrors: true, onErrorReturn: (i, exception) => 99)
+            var result = StartPipeline(() => 4, ignoreErrors: true, 
+                                                onErrorReturn: (i, exception) => exception.HResult)
                 .Process(i => (i ^ 1) / 0, label: "xor")
                 .Process(i =>
                 {
@@ -106,7 +107,7 @@ passing Either<L,R> types, you can set the Either to say a Left if that best ind
                 .Process(i => i+1) // no short curcuit so next stage gets 99
                 .Finish();
 
-            Assert.IsTrue( result == 100 && isMinusCalled && isdivideByZeroCalled);
+            Assert.IsTrue( result == -2147352557 && isMinusCalled && isdivideByZeroCalled);
         }
         
 ```
