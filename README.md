@@ -21,8 +21,7 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
  const string data = " hello Everybody!";
 
             var result = StartPipeline(() => data)
-                .Process(str => str.ToUpper()) // process the data (string)
-                .Process(s1 => s1.ToUpper()) //process the data now in upercase (string)
+                .Process(str => str.ToUpper()) // process the data (string)               
                 .ProcessAndTransform(x => x.Length) // process the data (string) and tranform to int
                 .Process(i => i) // use int from now on...
                 .Finish(); // Return the integer now.
