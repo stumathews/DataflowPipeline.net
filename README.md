@@ -16,8 +16,8 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
             var result = StartPipeline(() => data)
                 .Process(str => str.ToUpper()) // process the data (string)
                 .Process(s1 => s1.ToUpper()) //process the data now in upercase (string)
-                .ProcessAndTransform(x => x.Length) // process the data (string) but return it into the pipeline as an integer (change type)
-                .Process(i => i)
-                .Finish(); // Return the integer now. This is similar to what Bind() does in languageExt
+                .ProcessAndTransform(x => x.Length) // process the data (string) and tranform to int
+                .Process(i => i) // use int from now on...
+                .Finish(); // Return the integer now.
             Assert.AreEqual(result, 17);
 ```
