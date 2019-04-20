@@ -5,7 +5,6 @@ DataFlowPipeline is a .net Standard library that allows you to create a simple C
 The filters are simple typed functions that you can write to take in any type data and return it either modified, unmodifed or transformed in another type (and modified).
 
 Benefits of this architectural pattern is that you have flexibilty in designing your pipeline and the order and configuration of the filters you use. 
-Liabilities is that error handling can be awkward. 
 
 This implementation used the 'Push' variety of the pattern as described in "Pattern-Orientated Software Architecture for Dummies"
 by Robert Hanmer: https://www.amazon.com/Pattern-Oriented-Software-Architecture-Dummies-Robert/dp/1119963990
