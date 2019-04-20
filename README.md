@@ -49,7 +49,7 @@ Data pipelining as an architectural pattern is not traditionally been really gea
 
 We've taken the approach to allow you to specify that if any errors ooccur either skip that processing step and forward the data onto the next stage - basically ignore the stage and hope downstread something will fix it - or throw an exception either when it occurs or when the pipeline is finsihed. Alternatively and perhaps more useful is to automatically return some specified data from the pipeline by configuring your data so as to contain information about the exception. 
 
-LanguageExt deals with the latter approach by checking the data being passed in the pipeline behind the scenes(my pet hate) and then configuring the data that is returned by usually sending in a Either Left or Right depending on which one means error.
+LanguageExt deals with the latter approach by checking the data being passed in the pipeline behind the scenes (a pet hate of mind)  via Bind() and then configuring the data that is returned by usually sending in a Either Left to signify an error.
 
 As elluded to, this can also be done with DataFlowPipeline without hiding what its doing by supplying a returnIfError function which can configure the return type to indicate an error, like setting the Either data to indicate an error. Error information is avaialbe in the returnIfError function!
 
@@ -68,6 +68,12 @@ var result = StartPipeline(() => 4, ignoreErrors: true)
                     .ProcessAndTransform(i => "Stuart").Finish();
             Assert.AreEqual("Stuart",result);
 ```
+
+## What dont you just use language.Ext?
+Because in my opinion its not intuitive to use and brings with it alot of functional programming baggage that you sometimes jut dont need.
+I dont like how you cannot see the Bind() function's internals easily and you are forced to used Monads as the data being passed into their pipeline via the Bind() function. 
+DataFlowPipeline is tries to bring the idea of datapiplinng from LanguageExt and make it simpler and more intuitive to use: how many people look at a LanguageExt codebase and see Bind() and go huh whats that supposed to do. Also I like the wording in this project: Process, StartPipeline, Transform etc... 
+Also you might not need more than this simple data pipeline and can forgoe the complexity of using languageExt altogether.
 
 This shows you how you can throw if exceptions are encountered at any point, effectively halts the pipeline:
 
