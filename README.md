@@ -89,10 +89,10 @@ This shows you how you can throw if exceptions are encountered at any point, eff
 ```csharp
  Assert.ThrowsException<DivideByZeroException>(() 
                 => StartPipeline(() => 4, ignoreErrors: false)
-                .Process(i => (i ^ 1) / 0, label: "xor")
-                .Process(i => i - 1, label: "minus1")
-                .Process(i => i / 0, label: "dividebyzero")
-                .ProcessAndTransform(i => "Stuart"));
+                .Process(i => (i ^ 1) / 0, label: "xor") // halt! Exception
+                .Process(i => i - 1, label: "minus1") // not run
+                .Process(i => i / 0, label: "dividebyzero") //not run
+                .ProcessAndTransform(i => "Stuart")); //nor run
 ```
 
 This shows you how you can check what errors have occured along the pipeline prior to extracting the data from the pipeline:
