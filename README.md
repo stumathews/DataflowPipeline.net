@@ -43,6 +43,19 @@ If you dont extract the value out of the pipeline, you can inspect the pipeline 
 
 You can have any number of steps in the pipeline and have control over what happens when an error/exception occurs.
 
+# Whats data pipelining good for anyway?
+
+* Transforming incoming data 
+* Logging
+* Code flow:
+Data pipeline is great for simplifying your code into discrete parts that do specific things. It makes the code look simple and if they look simple then its esier to maintain.
+* Inspection and validation
+You can check the data meets requirements and if not, make the data invalid.
+* Parsing?
+
+Pipes, the custom stages that made up the processing pieces in your pipeline are reusable and offer low coupling to the rest of the pipe. 
+
+
 # Error handling
 
 Data pipelining as an architectural pattern is not traditionally been really geared up for providing maximum flexibility in dealing with complex errors encountered while processing the pipeline. That said, with DataFlowPipeline.net, there are strategies to deal with this. 
