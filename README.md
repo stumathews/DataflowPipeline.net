@@ -49,6 +49,7 @@ You can have any number of steps in the pipeline and have control over what happ
 * Logging
 * Code flow:
 Data pipeline is great for simplifying your code into discrete parts that do specific things. It makes the code look simple and if they look simple then its esier to maintain.
+* Processing incoming API request.
 * Inspection and validation
 You can check the data meets requirements and if not, make the data invalid.
 * Parsing?
