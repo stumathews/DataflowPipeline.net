@@ -56,6 +56,14 @@ You can check the data meets requirements and if not, make the data invalid.
 
 Pipes, the custom stages that made up the processing pieces in your pipeline are reusable and offer low coupling to the rest of the pipe. They are reusable becasue they are just ordinary function that take in the data you feed into your pipeline. If you wanted to, you could load up the funtions from a dll and run them in the pipeline in a sort of plug-and-play type of design - you'd have to serialize and deserialize your functions though, DataFlowPipeline.net doesn't do that for you. 
 
+# Getting started
+
+Add the the following using statements to your program:
+
+```csharp
+using Pipeline;
+using static Pipeline.Pipeline;
+```
 
 # Error handling
 
