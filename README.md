@@ -98,7 +98,7 @@ I dont like how you cannot see the Bind() function's internals easily and you ar
 
 DataFlowPipeline is tries to bring the idea of datapiplinng from LanguageExt and make it simpler using any data type and to make the usage of it more intuitive to use: how many people look at a LanguageExt codebase and see Bind() and go huh whats that supposed to do? or Can i change what Bind() does? 
 
-Also I like the wording in this project: Process, StartPipeline, Transform etc... is more intuitive.
+Also I like the wording in this project: Process (to process a stage in the pipeline), StartPipeline (to well, being a pipline with some startting data), Transform (like process but can turn the pipeline data into a new type and pass that on to the next Process() ) etc... its more intuitive (and its my party so I'll speak like how i wonna!)
 
 Also you might not need more than this simple data pipeline and can forgoe the complexity of using languageExt altogether.
 
