@@ -21,18 +21,19 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
         {
             var data = " hello Everybody!";
 
-            string result = StartPipeline(() => data) //send in data
-                .Process(s1 => s1) //process string
-                .Process(s1 => s1.ToUpper()) //process string
-                .Finish(); // return string
+            string result = StartPipeline(() => data) //send in data in this csae a string
+                .Process(s1 => s1) //process string - do nothing with it in this case, just sent to next process stage 
+                .Process(s1 => s1.ToUpper()) //process string by turning it to upper case and sending it onwards.
+                .Finish(); // return the contents of the pipe at this point, an uppercaseed string in this case
 
-            // you can turn any type into a pipeline
+            // You can turn any existing type/data and use it as the start of a new pipeline
 
-            result.MakePipeline(x => x.Length) //Notice we can also change type when making a new pipeline
-                .Process(i => i)
-                .ProcessAndTransform(i => i) //process new int pipeline
-                .ProcessAndTransform(i => (double)i) // convert to a double now
-                .Finish();
+            result.MakePipeline(x => x.Length) // Notice we can also change type when making a new pipeline (int in this case, length)
+                .Process(i => i + 2) // add two to it
+                .Process(i => doSomethingCoolWithIt(i)) // add two to it
+                .ProcessAndTransform(i => (double)i) // convert data to a double now and send onwards through the pipeline
+                .Process(i => i / 33.3) // more work on the data but this time the data is now in the form of a double...
+                .Finish(); // extract the data now at it stands after all the stages have processed it.
                 
             Assert.AreEqual(result, 17f);
         }
