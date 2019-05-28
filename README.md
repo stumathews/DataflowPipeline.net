@@ -40,7 +40,7 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
 ```
 You can extract the last value from the pipe by calling Finish() or by making the last step in the pipeline a ThenUse() function.
 
-If you dont extract the value out of the pipeline, its in an intermediate type called a '' but this type you can inspect the pipeline for errors (and its contents) or manually get the result out by accessig the .Result member on the pipeline.
+If you dont extract the value out of the pipeline, its in an intermediate type called a 'PipeResult<T>(T represents the type of data in the pipline currently)' but this type you can inspect the pipeline for errors (and its contents) or manually get the result out by accessig the .Result member on the pipeline. 
 
 You can have any number of steps in the pipeline and have control over what happens when an error/exception occurs.
 
