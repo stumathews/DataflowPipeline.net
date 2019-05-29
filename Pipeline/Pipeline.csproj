@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DataflowPipeline</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Stuart Mathews</Authors>
+    <Description>Simple dataflow architectural design pattern implmented in C#</Description>
+    <PackageProjectUrl>https://github.com/stumathews/pipelines</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/stumathews/pipelines</RepositoryUrl>
+    <PackageId>DataFlowPipeline</PackageId>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>
