@@ -266,9 +266,11 @@ In this case, any exceptions are ingored
         }
     }
 ```
-This example show you how you can provide a list of processes and they will act as a series of stages of the pipeline that your data has to get through:
 
 Beta:
+
+This example show you how you can provide a list of processes and they will act as a series of stages of the pipeline that your data has to get through. This doesn't yet deal with errors effectively.
+
 ```csharp 
          [TestMethod]
         public void TestEnumerableProcesses()
