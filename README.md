@@ -21,7 +21,7 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
         {
             var data = " hello Everybody!";
 
-            string result = StartPipeline(() => data) //send in data in this csae a string
+            string result = StartPipeline(() => data) //send in data in this case a string
                 .Process(s1 => s1) //process string - do nothing with it in this case, just sent to next process stage 
                 .Process(s1 => s1.ToUpper()) //process string by turning it to upper case and sending it onwards.
                 .Finish(); // return the contents of the pipe at this point, an uppercaseed string in this case
@@ -40,7 +40,7 @@ https://www.enterpriseintegrationpatterns.com/patterns/messaging/PipesAndFilters
 ```
 You can extract the last value from the pipe by calling Finish() or by making the last step in the pipeline a ThenUse() function.
 
-If you dont extract the value out of the pipeline, its in an intermediate type called a ```PipeResult<T>```(T represents the type of data in the pipline currently)' but this type you can inspect the pipeline for errors (and its contents) or manually get the result out by accessig the .Result member on the pipeline. 
+If you dont extract the value out of the pipeline, its in an intermediate type called a ```PipeResult<T>```(T represents the type of data in the pipline currently)' but this type you can inspect the pipeline for errors (and its contents) or manually get the result out by accessing the .Result member on the pipeline. 
 
 You can have any number of steps in the pipeline and have control over what happens when an error/exception occurs.
 
@@ -55,7 +55,7 @@ Data pipeline is great for simplifying your code into discrete parts that do spe
 You can check the data meets requirements and if not, make the data invalid.
 * Parsing?
 
-Pipes, the custom stages that made up the processing pieces in your pipeline are reusable and offer low coupling to the rest of the pipe. They are reusable becasue they are just ordinary function that take in the data you feed into your pipeline. If you wanted to, you could load up the funtions from a dll and run them in the pipeline in a sort of plug-and-play type of design - you'd have to serialize and deserialize your functions though, DataFlowPipeline.net doesn't do that for you. 
+Pipes - the custom stages that made up the processing pieces in your pipeline (and setup using the Process() function) are reusable and offer low coupling to the rest of the pipe. They are reusable becasue they are just ordinary function that take in the data you feed into your pipeline. If you wanted to, you could load up the funtions from a dll and run them in the pipeline in a sort of plug-and-play type of design - you'd have to serialize and deserialize your functions though, DataFlowPipeline.net doesn't do that for you. 
 
 # Getting started
 
@@ -74,11 +74,11 @@ We've taken the approach to allow you to specify that if any errors ooccur eithe
 
 LanguageExt deals with the latter approach by checking the data being passed in the pipeline behind the scenes (a pet hate of mind)  via Bind() and then configuring the data that is returned by usually sending in a Either Left to signify an error.
 
-As elluded to, this can also be done with DataFlowPipeline without hiding what its doing by supplying a returnIfError function which can configure the return type to indicate an error, like setting the Either data to indicate an error. Error information is avaialbe in the returnIfError function!
+As elluded to, this can also be done with DataFlowPipeline without hiding what its doing by supplying a returnIfError function which can configure the return type to indicate an error, like setting the Either data to indicate an error. Error information is available in the returnIfError function (You can see this in examples below)
 
 You can optionally choose to continue with running the pipeline after an error or short circuting the rest of the pipeline and return the last result or the configured returnOnError result.
 
-Unlike traditional pipeline and filters implementations such as the classic unix pipes, any errors that are encountered as exceptions are logged and available at the end of the pipeline along with the stage/filter name if you provided it. They are not sent to a parallel pipeline. I belive this to be useful :-)
+Unlike traditional pipeline and filters implementations such as the classic unix pipes, any errors that are encountered as exceptions are logged and available at the end of the pipeline along with the stage/filter name if you provided it. They are not sent to a parallel pipeline. I belive this feature is useful :-)
 
 # Example:
 
@@ -267,7 +267,7 @@ In this case, any exceptions are ingored
     }
 ```
 
-Beta:
+Currently Beta:
 
 This example show you how you can provide a list of processes and they will act as a series of stages of the pipeline that your data has to get through. This doesn't yet deal with errors effectively.
 
