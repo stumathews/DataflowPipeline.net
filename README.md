@@ -284,7 +284,11 @@ This example show you how you can provide a list of processes and they will act 
 
             // This will run each process and pass the results of the previous one into the next process
             var result = StartPipeline(() => 1000)
-                .Processes(fns).Result;
+                .Process( i => i + 1 )
+                .Process( i => DoSomethingElseWith(i))
+                .Processes(fns)
+                .Process( i => Eat(i))
+                .Result;
 
             Assert.IsTrue(result == 1006);
         }
