@@ -105,7 +105,7 @@ Also you might not need more than this simple data pipeline and can forgoe the c
 
 There is a lot more control over how the pipeline works and this makes it easier to reason about then Bind() in LanguageExt
 
-## More Examples
+## Dealing with errors in the pipeline
 
 This shows you how you can throw if exceptions are encountered at any point, effectively halts the pipeline:
 
@@ -265,4 +265,24 @@ In this case, any exceptions are ingored
                            && isMinusCalled && isdivideByZeroCalled);
         }
     }
+```
+This example show you how you can provide a list of processes and they will act as a series of stages of the pipeline that your data has to get through:
+
+```csharp 
+         [TestMethod]
+        public void TestEnumerableProcesses()
+        {
+            Func<int, int> fn1 = (i) => i + 1;
+            Func<int, int> fn2 = (i) => i + 2;
+            Func<int, int> fn3 = (i) => i + 3;
+            
+            // these are all the custom stages that will transform your data along the the way
+            var fns = new[] { fn1, fn2, fn3 }; 
+
+            // This will run each process and pass the results of the previous one into the next process
+            var result = StartPipeline(() => 1000)
+                .Processes(fns).Result;
+
+            Assert.IsTrue(result == 1006);
+        }
 ```
