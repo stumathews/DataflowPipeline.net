@@ -267,9 +267,9 @@ In this case, any exceptions are ingored
     }
 ```
 
-Currently Beta:
+Currently pre-release (testing):
 
-This example show you how you can provide a list of processes and they will act as a series of stages of the pipeline that your data has to get through. This doesn't yet deal with errors effectively.
+This example show you how you can provide a list of processes and they will act as a series of stages of the pipeline that your data has to get through. This doesn't yet deal with errors effectively, so best to side-step the pre-release version and stick with stable versions until this is ready.
 
 ```csharp 
          [TestMethod]
