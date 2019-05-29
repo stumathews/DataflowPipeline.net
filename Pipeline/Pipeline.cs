@@ -10,8 +10,8 @@ namespace Pipeline
         /// <typeparam name="T"></typeparam>
         /// <param name="returningAction">The function that will result in some data, which wil be fed into the pipeline</param>
         /// <returns>the first set of data to enter the pipeline</returns>
-        public static PipeResult<T> StartPipeline<T>(Func<T> returningAction, bool ignoreErrors = false) 
-            => new PipeResult<T>(returningAction(), ignoreErrors);
+        public static PipeResult<T> StartPipeline<T>(Func<T> returningAction, bool ignoreErrors = false, Func<T, Exception, T> onErrorReturn = null, bool shortCircuitOnError = false) 
+            => new PipeResult<T>(returningAction(), ignoreErrors, onErrorReturn, shortCircuitOnError);
 
         /// <summary>
         /// Takes any arbitary data and feeds it into a new pipeline
