@@ -317,12 +317,52 @@ namespace Tests
             Func<int, int> fn1 = (i) => i + 1;
             Func<int, int> fn2 = (i) => i + 2;
             Func<int, int> fn3 = (i) => i + 3;
+            
             var fns = new[] { fn1, fn2, fn3 };
 
             var result = StartPipeline(() => 1000)
+
                 .Processes(fns).Result;
 
             Assert.IsTrue(result == 1006);
+        }
+
+        [TestMethod]
+        public void TestEnumerableProcessesWithErrorsWithShortCircuit()
+        {
+            Func<int, int> fn1 = (i) => i + 1;
+            Func<int, int> fn2 = (i) => i + 2;
+            Func<int, int> fn3 = (i) => i + 3;
+            Func<int, int> fn4 = (i) => (i ^ 1) / 0; //ignores this error
+            var fns = new[] { fn1, fn2, fn4, fn3 };
+
+            var result = StartPipeline(() => 1000, onErrorReturn: (i, exc)=>
+                {
+                    return 99;
+                }, shortCircuitOnError: true, ignoreErrors: true)
+
+                .Processes(fns).Result;
+
+            Assert.IsTrue(result == 99);
+        }
+
+        [TestMethod]
+        public void TestEnumerableProcessesWithErrorsAndNotShortCircuit()
+        {
+            Func<int, int> fn1 = (i) => i + 1;
+            Func<int, int> fn2 = (i) => i + 2;
+            Func<int, int> fn3 = (i) => i + 3;
+            Func<int, int> fn4 = (i) => (i ^ 1) / 0; //ignores this error
+            var fns = new[] { fn1, fn2, fn4, fn3 };
+
+            var result = StartPipeline(() => 1000, onErrorReturn: (i, exc)=>
+                {
+                    return 99;
+                }, shortCircuitOnError: false, ignoreErrors: true)
+
+                .Processes(fns).Result;
+
+            Assert.IsTrue(result == 102); // is this right
         }
     }
 }

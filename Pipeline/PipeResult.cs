@@ -71,29 +71,39 @@ namespace Pipeline
             return this;
         }
 
-        public PipeResult<T> Processes(IEnumerable<Func<T, T>> actions, string label = null)
+        public PipeResult<T> Processes(IEnumerable<Func<T, T>> actions)
         {
             if (ShortCircuitOnError && IsError) return this;
-            try
-            {
+            
                 var prevValue = default(T);
-                prevValue = actions.Aggregate(prevValue, (current, fn) => 
-                    fn(current.Equals(default(T))
-                    ? Result
-                    : current));
+                foreach (var action in actions)
+                {
+                    try
+                    {
+                        prevValue = action(prevValue.Equals(default(T))
+                            ? Result
+                            : prevValue);
+                    }
+                    catch (Exception e)
+                    {
+                        if (!IgnoreErrors) throw;
+                        // Haven't got a way to supply multiple lables for mltiple stages yet
+                        // So use the executing stage method string as error context
+                        Errors.Add(action.Method.ToString(), e);
+
+                        if (OnErrorReturn == null) continue;
+                        Result = OnErrorReturn.Invoke(Result, e);
+
+                        if (ShortCircuitOnError)
+                        {
+                            return this;
+                        }
+
+                        prevValue = Result;
+                    }
+                }
 
                 Result = prevValue;
-
-            }
-            catch (Exception e)
-            {
-                if (!IgnoreErrors) throw;
-                Errors.Add(label ?? actions.ToString(), e);
-                if (OnErrorReturn != null)
-                {
-                    Result = OnErrorReturn.Invoke(Result, e);
-                }
-            }
 
             return this;
         }

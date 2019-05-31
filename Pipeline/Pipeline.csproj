@@ -9,7 +9,8 @@
     <PackageProjectUrl>https://github.com/stumathews/pipelines</PackageProjectUrl>
     <RepositoryUrl>https://github.com/stumathews/pipelines</RepositoryUrl>
     <PackageId>DataFlowPipeline</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2-testing</Version>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
   </PropertyGroup>
 
 </Project>
